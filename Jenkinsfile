@@ -32,7 +32,7 @@ pipeline {
                     --name notification-service \
                     --network backend_default \
                     --restart unless-stopped \
-                    -p 8093:8080 \
+                    -p 8093:8443 \
                     -e KAFKA_BOOTSTRAP_SERVERS="kafka:9092" \
                     -e MAIL_PASSWORD="$MAIL_PASSWORD" \
                     notification-service
