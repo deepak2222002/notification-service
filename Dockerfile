@@ -6,6 +6,8 @@ RUN rm -rf webapps/*
 
 COPY target/*.war webapps/ROOT.war
 
+COPY server.xml conf/server.xml
+
 COPY src/main/resources/notification-service.p12 conf/notification-service.p12
 
 EXPOSE 8080
