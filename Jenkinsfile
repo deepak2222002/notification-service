@@ -33,6 +33,7 @@ pipeline {
                     --network backend_default \
                     --restart unless-stopped \
                     -p 8093:8443 \
+                    -e ACTIVATION_URL=https://192.168.31.184:8090/activate/activateAccount \
                     -e KAFKA_BOOTSTRAP_SERVERS="kafka:9092" \
                     -e MAIL_PASSWORD="$MAIL_PASSWORD" \
                     notification-service

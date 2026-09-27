@@ -9,9 +9,14 @@ import web.minda.project.dto.UserCreatedEvent;
 public class UserEventConsumer {
 
     private final EmailService emailService;
+    private final ActivationService activationService;
 
-    public UserEventConsumer(EmailService emailService) {
+    public UserEventConsumer(
+            EmailService emailService,
+            ActivationService activationService) {
+
         this.emailService = emailService;
+        this.activationService = activationService;
     }
 
     @KafkaListener(
@@ -24,9 +29,15 @@ public class UserEventConsumer {
             "User Created: " + event.getEmail()
         );
 
+        String activationToken =
+                activationService.createActivationToken(
+                        event.getEmail()
+                );
+
         emailService.sendWelcomeEmail(
-            event.getEmail(),
-            event.getFirstName()
+                event.getEmail(),
+                event.getFirstName(),
+                activationToken
         );
     }
 }
