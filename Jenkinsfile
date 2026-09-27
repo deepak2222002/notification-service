@@ -22,9 +22,14 @@ pipeline {
             }
         }
 
-        stage('Deploy') {
+		 stage('Deploy') {
             steps {
-                sh '''
+                withCredentials([usernamePassword(
+                    credentialsId: 'db-remoteuser',
+                    usernameVariable: 'DB_USERNAME',
+                    passwordVariable: 'DB_PASSWORD'
+                )]) {
+                    sh '''
                     docker stop notification-service || true
                     docker rm notification-service || true
 
@@ -33,7 +38,10 @@ pipeline {
                     --network backend_default \
                     --restart unless-stopped \
                     -p 8093:8443 \
-                    -e ACTIVATION_URL=https://192.168.31.184:8090/activate/activateAccount \
+                    -e DB_URL="jdbc:sqlserver://sqlserver:1433;databaseName=jobportal;trustServerCertificate=true" \
+                    -e DB_USERNAME="$DB_USERNAME" \
+                    -e DB_PASSWORD="$DB_PASSWORD" \
+                    -e App_ACTIVATION_URL=https://192.168.31.184:8090/activate/activateAccount \
                     -e KAFKA_BOOTSTRAP_SERVERS="kafka:9092" \
                     notification-service
                 '''
